@@ -1,0 +1,28 @@
+OS:
+    '2012':
+        iso: 'windows_2012.iso'
+        key: ''
+        release: 'Win8'
+        imagename: 'Windows Server 2012 SERVERSTANDARDCORE'
+    '2012UI':
+        iso: 'windows_2012.iso'
+        key: ''
+        imagename: 'Windows Server 2012 SERVERSTANDARD'
+    '2012R2':
+        iso: 'windows_2012R2.iso'
+        key: '<ProductKey><Key>AAAAA-BBBBB-CCCCC-DDDDD-EEEEE</Key></ProductKey>'
+        release: 'Win8.1'
+        imagename: 'Windows Server 2012 R2 SERVERSTANDARDCORE'
+    '2012R2UI':
+        iso: 'windows_2012R2.iso'
+        key: '<ProductKey><Key>AAAAA-BBBBB-CCCCC-DDDDD-EEEEE</Key></ProductKey>'
+        imagename: 'Windows Server 2012 R2 SERVERSTANDARD'
+    '2016':
+        iso: 'windows_2016.iso'
+        key: '<ProductKey><Key>AAAAA-BBBBB-CCCCC-DDDDD-EEEEE</Key></ProductKey>'
+        release: 'Win10'
+        imagename: 'Windows Server 2016 SERVERDATACENTERCORE'
+    '2016UI':
+        iso: 'windows_2016.iso'
+        key: '<ProductKey><Key>AAAAA-BBBBB-CCCCC-DDDDD-EEEEE</Key></ProductKey>'
+        imagename: 'Windows Server 2016 SERVERDATACENTER'

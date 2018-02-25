@@ -1,0 +1,136 @@
+<domain type='kvm'>
+  <name>{{ name }}</name>
+  <memory unit='GiB'>{{ ram }}</memory>
+  <currentMemory unit='GiB'>{{ ram }}</currentMemory>
+  <vcpu placement='static'>{{ vcpus }}</vcpu>
+  <os>
+    <type arch='x86_64' machine='pc'>hvm</type>
+    <boot dev='cdrom'/>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+    <hyperv>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+    </hyperv>
+    <pvspinlock/>
+  </features>
+  <cpu mode='host-passthrough'>
+    <feature policy='disable' name='hypervisor'/>
+  </cpu>
+  <clock offset='localtime'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='hypervclock' present='yes'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  {% if pm == "true" -%}
+  <pm>
+    <suspend-to-disk enabled='no'/>
+    <suspend-to-mem enabled='no'/>
+  </pm>
+  {%- endif %}
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/bin/kvm-spice</emulator>
+      <disk type='file' device='disk'>
+        <driver name='qemu' type='{{ disks.disk1.format }}'/>
+        <source file='{{ disks.disk1.file }}'/>
+        <target dev='sda' bus='{{ disks.disk1.driver }}'/>
+      </disk>
+    {% if disks.disk2 -%}
+      <disk type='file' device='disk'>
+        <driver name='qemu' type='{{ disks.disk2.format }}'/>
+        <source file='{{ disks.disk2.file }}'/>
+        <target dev='sdb' bus='{{ disks.disk2.driver }}'/>
+      </disk>
+    {%- endif %}
+    {% if pvscsi -%}
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='{{ pvscsi.type }}'/>
+      <source file='{{ pvscsi.file }}'/>
+      <target dev='{{ pvscsi.dev }}' bus='{{ pvscsi.bus }}'/>
+      <serial>ABC123</serial>
+    </disk>
+   {%- endif %}
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='{{ cdrom }}'/>
+      <target dev='sde' bus='ide'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='1' target='0' unit='0'/>
+    </disk>
+    <disk type="file" device="floppy">
+      <driver name="qemu" type='raw'/>
+      <source file='{{ floppy }}'/>
+      <target dev="fda" bus="fdc"/>
+    </disk>
+    <controller type='usb' index='0' model='ich9-ehci1'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x7'/>
+    </controller>
+    <controller type='usb' index='0' model='ich9-uhci1'>
+      <master startport='0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0' multifunction='on'/>
+    </controller>
+    <controller type='fdc' index='0'/>
+    <controller type='ide' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+    </controller>
+    {% if pvscsi -%}
+    <controller type='scsi' index='0' model='virtio-scsi'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </controller>
+    {%- endif %}
+      <interface type='network'>
+        <mac address='{{ nics.nic1.mac }}'/>
+        <source network='{{ nics.nic1.network }}'/>
+        <model type='{{ nics.nic1.driver }}'/>
+      </interface>
+    {% if nics.nic2 -%}
+       <interface type='network'>
+        <mac address='{{ nics.nic2.mac }}'/>
+        <source network='{{ nics.nic2.network }}'/>
+        <model type='{{ nics.nic2.driver }}'/>
+      </interface>
+    {%- endif %}
+    {% if serial -%}
+    <controller type='virtio-serial' index='1'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
+    </controller>
+    {%- endif %}
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <input type='mouse' bus='ps2'/>
+    <input type='tablet' bus='usb'/>
+    <graphics type='vnc' port='-1' autoport='yes'/>
+    <video>
+      <model type='vga' vram='9216' heads='1'/>
+      <alias name='video0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </video>
+    {% if balloon -%}
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+    </memballoon>
+    {% else %}
+    <memballoon model='none'/>
+    {%- endif %}
+    {% if entropy -%}
+    <rng model='virtio'>
+      <backend model='random'>/dev/random</backend>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </rng>
+    {%- endif %}
+  </devices>
+</domain>
+

@@ -1,0 +1,24 @@
+<network>
+  <name>external</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='off' delay='0' />
+  <ip address='192.168.250.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.250.200' end='192.168.250.250' />
+        <host mac="52:54:00:F2:50:C1" name="TestVM1" ip="192.168.250.11"/>
+	<host mac='52:54:00:F2:50:C2' name='TestVM2' ip='192.168.250.12'/>
+	<host mac='52:54:00:F2:50:C3' name='TestVM3' ip='192.168.250.13'/>
+	<host mac='52:54:00:F2:50:C4' name='TestVM4' ip='192.168.250.14'/>
+	<host mac='52:54:00:F2:50:C5' name='TestVM5' ip='192.168.250.15'/>
+	<host mac='52:54:00:F2:50:C6' name='TestVM6' ip='192.168.250.16'/>
+	<host mac='52:54:00:F2:50:C7' name='TestVM7' ip='192.168.250.17'/>
+	<host mac='52:54:00:F2:50:C8' name='TestVM8' ip='192.168.250.18'/>
+	<host mac='52:54:00:F2:50:C9' name='TestVM9' ip='192.168.250.19'/>
+    </dhcp>
+  </ip>
+</network>
+
